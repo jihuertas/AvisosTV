@@ -38,7 +38,7 @@
       box-sizing: border-box;
     }
 
-    /* Columna izquierda: Fuerza la proporción 16:9 de las diapositivas */
+    /* Columna izquierda: Ajustada para expandirse de forma fluida */
     .main-container {
       display: flex;
       flex-direction: column;
@@ -46,23 +46,26 @@
       min-height: 0;
     }
 
+    /* Modificado para eliminar las bandas negras verticales/horizontales */
     .slides-wrapper {
       flex: 1;
       width: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      height: 100%;
       background: #000;
       border-radius: 14px;
       overflow: hidden;
       border: 1px solid var(--border);
+      position: relative;
     }
 
-    /* Contenedor mágico 16:9 para evitar franjas negras */
-    .aspect-16-9 {
+    /* Forzar al iframe de las diapositivas a rellenar el panel por completo */
+    .slides-wrapper iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
       width: 100%;
-      aspect-ratio: 16 / 9;
-      max-height: 100%;
+      height: 100%;
+      border: 0;
     }
 
     /* Columna derecha: Se divide verticalmente maximizando la agenda */
@@ -168,7 +171,15 @@
       position: relative;
     }
 
-    iframe {
+    /* Contenedor adaptado para encoger la interfaz nativa de Google Calendar */
+    .calendar-wrapper {
+      width: 118%;  /* Escalamos el ancho virtual para compensar la reducción */
+      height: 118%; /* Escalamos el alto virtual */
+      transform: scale(0.85); /* Reduce las letras y paddings un 15% */
+      transform-origin: top left;
+    }
+
+    .calendar-wrapper iframe {
       width: 100%;
       height: 100%;
       border: 0;
@@ -195,6 +206,7 @@
       font-size: 11px;
       backdrop-filter: blur(4px);
       transition: background 0.2s;
+      z-index: 10;
     }
     .login-btn:hover { background: rgba(255, 255, 255, 0.15); }
   </style>
@@ -215,9 +227,7 @@
           <div class="panel__meta small">Actualiza cada 5 min</div>
         </div>
         <div class="panel__body slides-wrapper">
-          <div class="aspect-16-9">
-            <iframe src="https://docs.google.com/presentation/d/e/2PACX-1vQFJtOXaEJ5hexkPY2kxRC7tP1gls02xmfIKMcqx3ymIo9br2n8kOPna2GiC39RFdcKCXaBjSRNtc4L/pubembed?start=true&loop=true&delayms=10000" frameborder="0" allowfullscreen="true" mozallowfullscreen="true" webkitallowfullscreen="true"></iframe>
-          </div>
+          <iframe src="https://docs.google.com/presentation/d/e/2PACX-1vQFJtOXaEJ5hexkPY2kxRC7tP1gls02xmfIKMcqx3ymIo9br2n8kOPna2GiC39RFdcKCXaBjSRNtc4L/pubembed?start=true&loop=true&delayms=10000" frameborder="0" allowfullscreen="true" mozallowfullscreen="true" webkitallowfullscreen="true"></iframe>
         </div>
       </section>
     </div>
@@ -239,8 +249,10 @@
           <div class="panel__title">📅 Agenda</div>
           <div class="panel__meta small">Eventos de la semana</div>
         </div>
-        <div class="panel__body">
-          <iframe src="https://calendar.google.com/calendar/embed?height=800&wkst=2&ctz=Europe%2FMadrid&showPrint=0&showTitle=0&showNav=0&showDate=0&showTabs=0&showCalendars=0&showTz=0&mode=AGENDA&src=aWVzaG5vc21hY2hhZG8ub3JnX2oxaG8ydmowanFiYW8zYjZ1Nzk5bnMwcjZjQGdyb3VwLmNhbGVuZGFyLmdvb2dsZS5jb20&src=aWVzaG5vc21hY2hhZG9AaWVzaG5vc21hY2hhZG8ub3Jn&color=%23009688&color=%23b39ddb" style="border-width:0" frameborder="0" scrolling="yes"></iframe>
+        <div class="panel__body" style="overflow: hidden;">
+          <div class="calendar-wrapper">
+            <iframe src="https://calendar.google.com/calendar/embed?height=800&wkst=2&ctz=Europe%2FMadrid&showPrint=0&showTitle=0&showNav=0&showDate=0&showTabs=0&showCalendars=0&showTz=0&mode=AGENDA&src=aWVzaG5vc21hY2hhZG8ub3JnX2oxaG8ydmowanFiYW8zYjZ1Nzk5bnMwcjZjQGdyb3VwLmNhbGVuZGFyLmdvb2dsZS5jb20&src=aWVzaG5vc21hY2hhZG9AaWVzaG5vc21hY2hhZG8ub3Jn&color=%23009688&color=%23b39ddb" frameborder="0" scrolling="yes"></iframe>
+          </div>
           <button class="login-btn" onclick="window.location.href='https://accounts.google.com/ServiceLogin?continue=https://calendar.google.com/calendar/embed'">🔑 Login Google</button>
         </div>
       </aside>
