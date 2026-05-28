@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tablón Sala de Profesorado - Max Presentation</title>
+    <title>Tablón Alumnado</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Playfair+Display:ital,wght@0,600;1,600&display=swap" rel="stylesheet">
@@ -40,7 +40,7 @@
             padding: var(--gap);
         }
 
-        /* --- COLUMNA IZQUIERDA (MAXIMIZADA) --- */
+        /* --- COLUMNA IZQUIERDA --- */
         .left-column {
             display: flex;
             flex-direction: column;
@@ -49,27 +49,39 @@
             min-height: 0;
         }
 
-        /* Presentación expandida al máximo */
-        .slides-panel {
-            flex: 1; /* Ocupa todo el espacio vertical que pueda */
-            background: #000;
+        /* Contenedor principal del tablón con su cabecera */
+        .slides-panel-container {
+            flex: 1;
+            background: var(--panel-bg);
             border-radius: 16px;
             border: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
             overflow: hidden;
             box-shadow: var(--shadow);
-            position: relative;
         }
 
-        .slides-panel iframe {
+        /* Espacio de recorte para ocultar estrictamente la barra inferior de Google Slides */
+        .slides-body-clipper {
+            flex: 1;
+            position: relative;
+            background: #000;
+            overflow: hidden; /* Recorta los 30px extra de la barra */
+        }
+
+        /* Forzamos al iframe a bajar un pelín para esconder sus controles */
+        .slides-body-clipper iframe {
             position: absolute;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
+            top: 0; 
+            left: 0;
+            width: 100%; 
+            height: calc(100% + 30px); /* Empuja la barra negra fuera del área visible */
             border: 0;
         }
 
-        /* Contenedor Inferior Pequeño para la Frase del Día */
+        /* Banner inferior para la Frase del Día */
         .daily-quote-banner {
-            height: 75px; /* Altura muy pequeña y estilizada */
+            height: 70px; 
             background: var(--panel-bg);
             border-radius: 14px;
             border: 1px solid var(--border);
@@ -195,10 +207,14 @@
             box-shadow: var(--shadow);
         }
 
+        /* Estilo unificado para cabeceras de paneles */
         .panel-header {
             padding: 14px 20px;
             border-bottom: 1px solid var(--border);
             background: rgba(255,255,255,0.02);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
         .panel-header h2 {
@@ -208,6 +224,12 @@
             display: flex;
             align-items: center;
             gap: 8px;
+        }
+
+        .panel-meta {
+            font-size: 12px;
+            color: var(--text-muted);
+            font-weight: 600;
         }
 
         .agenda-container {
@@ -242,9 +264,16 @@
     <div class="layout-grid">
         
         <div class="left-column">
-            <div class="slides-panel">
-                <iframe src="https://docs.google.com/presentation/d/e/2PACX-1vQFJtOXaEJ5hexkPY2kxRC7tP1gls02xmfIKMcqx3ymIo9br2n8kOPna2GiC39RFdcKCXaBjSRNtc4L/pubembed?start=true&loop=true&delayms=10000"></iframe>
-            </div>
+            
+            <section class="slides-panel-container">
+                <div class="panel-header">
+                    <h2>📌 Tablón de anuncios</h2>
+                    <div class="panel-meta">Actualiza cada 5 min</div>
+                </div>
+                <div class="slides-body-clipper">
+                    <iframe src="https://docs.google.com/presentation/d/e/2PACX-1vQFJtOXaEJ5hexkPY2kxRC7tP1gls02xmfIKMcqx3ymIo9br2n8kOPna2GiC39RFdcKCXaBjSRNtc4L/pubembed?start=true&loop=true&delayms=10000&rm=minimal"></iframe>
+                </div>
+            </section>
             
             <div class="daily-quote-banner">
                 <div class="quote-layout">
@@ -320,10 +349,7 @@
         // --- ALGORITMO DE FRASE ÚNICA POR DÍA ---
         function setDailyQuote() {
             const now = new Date();
-            // Creamos un número único basado en el año, mes y día actual
             const dateSeed = now.getFullYear() * 1000 + (now.getMonth() + 1) * 100 + now.getDate();
-            
-            // Usamos la semilla matemática para seleccionar siempre el mismo índice durante las 24h
             const index = dateSeed % phrases.length;
             const dailySelection = phrases[index];
 
@@ -332,8 +358,6 @@
         }
         
         setDailyQuote();
-
-        // Recarga completa automática del sistema cada 10 minutos
         setTimeout(() => location.reload(), 600000);
     </script>
 </body>
