@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tablón Alumnado</title>
+    <title>Tablón Alumnado - IES Hermanos Machado</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Playfair+Display:ital,wght@0,600;1,600&display=swap" rel="stylesheet">
@@ -34,18 +34,16 @@
             overflow: hidden;
         }
 
-        /* Contenedor Grid Principal Forzado para pantallas de TV */
         .layout-grid {
             display: grid;
-            grid-template-columns: 65% 35%; /* Proporción fija pase lo que pase */
+            grid-template-columns: 65% 35%;
             width: 100%;
             height: 100vh;
             gap: var(--gap);
             padding: var(--gap);
-            box-sizing: border-box;
         }
 
-        /* --- COLUMNA IZQUIERDA (Diapositivas + Frase) --- */
+        /* --- COLUMNA IZQUIERDA --- */
         .left-column {
             display: flex;
             flex-direction: column;
@@ -55,7 +53,6 @@
         }
 
         .slides-panel-container {
-            flex: 1;
             background: var(--panel-bg);
             border-radius: 16px;
             border: 1px solid var(--border);
@@ -63,36 +60,41 @@
             flex-direction: column;
             overflow: hidden;
             box-shadow: var(--shadow);
+            flex-shrink: 1; /* Permite que se ajuste un poco si falta espacio */
         }
 
-        .slides-body-clipper {
-            flex: 1;
+        /* AJUSTE PARA 16:10 (Padding-top: 62.5%) */
+        .slides-aspect-ratio-box {
             position: relative;
+            width: 100%;
+            padding-top: 62.5%; /* Cálculo exacto para formato 16:10 */
             background: #000;
             overflow: hidden;
         }
 
-        .slides-body-clipper iframe {
+        .slides-aspect-ratio-box iframe {
             position: absolute;
-            top: 0; 
+            top: 0;
             left: 0;
-            width: 100%; 
-            height: calc(100% + 30px); /* Recorta la barra gris inferior de Slides */
+            width: 100%;
+            /* Ajuste sutil para ocultar la barra de Google Slides */
+            height: 105%; 
+            margin-top: -1.5%;
             border: 0;
         }
 
         .daily-quote-banner {
-            height: 75px; 
+            flex: 1; 
+            min-height: 70px;
             background: var(--panel-bg);
             border-radius: 14px;
             border: 1px solid var(--border);
             display: flex;
             align-items: center;
-            padding: 0 24px;
+            padding: 12px 24px;
             box-shadow: var(--shadow);
             position: relative;
             overflow: hidden;
-            flex-shrink: 0;
         }
 
         .daily-quote-banner::before {
@@ -124,9 +126,11 @@
 
         .quote-text-container {
             flex: 1;
+            white-space: normal;
+            display: -webkit-box;
+            -webkit-line-clamp: 2; /* Limita a 2 líneas si la frase es eterna */
+            -webkit-box-orient: vertical;
             overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
         }
 
         #quote-text {
@@ -134,18 +138,18 @@
             font-size: 18px;
             font-style: italic;
             color: var(--text-main);
+            line-height: 1.3;
         }
 
         #quote-author {
             font-family: 'Inter', sans-serif;
             font-size: 13px;
-            font-style: normal;
             color: var(--text-muted);
             margin-left: 8px;
             font-weight: 600;
         }
 
-        /* --- COLUMNA DERECHA (Hora + Agenda) --- */
+        /* --- COLUMNA DERECHA --- */
         .right-column {
             display: flex;
             flex-direction: column;
@@ -155,11 +159,11 @@
         }
 
         .brand-panel {
-            height: 120px;
+            height: 110px;
             background: var(--panel-bg);
             border-radius: 16px;
             border: 1px solid var(--border);
-            padding: 16px 20px;
+            padding: 12px 20px;
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -168,11 +172,11 @@
         }
 
         .logo-box {
-            height: 85px;
-            width: 85px;
+            height: 75px;
+            width: 75px;
             background: white;
             border-radius: 10px;
-            padding: 8px;
+            padding: 6px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -189,14 +193,14 @@
         }
 
         #clock {
-            font-size: 48px;
+            font-size: 44px;
             font-weight: 800;
             line-height: 1;
             letter-spacing: -1px;
         }
 
         #date {
-            font-size: 14px;
+            font-size: 13px;
             color: var(--text-muted);
             margin-top: 4px;
             text-transform: capitalize;
@@ -214,7 +218,7 @@
         }
 
         .panel-header {
-            padding: 14px 20px;
+            padding: 12px 20px;
             border-bottom: 1px solid var(--border);
             background: rgba(255,255,255,0.02);
             flex-shrink: 0;
@@ -222,7 +226,7 @@
 
         .panel-header h2 {
             margin: 0;
-            font-size: 16px;
+            font-size: 15px;
             font-weight: 600;
             display: flex;
             align-items: center;
@@ -233,7 +237,7 @@
             flex: 1;
             position: relative;
             overflow: hidden;
-            background: #fff; /* Fondo blanco para que el calendario de Google no se vuelva transparente */
+            background: #fff;
         }
 
         .calendar-scaler {
@@ -254,20 +258,19 @@
 
         .login-tag {
             position: absolute;
-            bottom: 12px;
-            right: 12px;
+            bottom: 10px;
+            right: 10px;
             background: var(--panel-bg);
-            padding: 6px 12px;
+            padding: 5px 10px;
             border-radius: 6px;
-            font-size: 11px;
+            font-size: 10px;
             color: var(--text-main);
             border: 1px solid var(--accent-blue);
             text-decoration: none;
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 5px;
             z-index: 10;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.4);
         }
     </style>
 </head>
@@ -276,14 +279,14 @@
     <div class="layout-grid">
         
         <div class="left-column">
-            <section class="slides-panel-container">
+            <div class="slides-panel-container">
                 <div class="panel-header">
                     <h2>📌 Tablón de anuncios</h2>
                 </div>
-                <div class="slides-body-clipper">
+                <div class="slides-aspect-ratio-box">
                     <iframe src="https://docs.google.com/presentation/d/e/2PACX-1vQFJtOXaEJ5hexkPY2kxRC7tP1gls02xmfIKMcqx3ymIo9br2n8kOPna2GiC39RFdcKCXaBjSRNtc4L/pubembed?start=true&loop=true&delayms=10000&rm=minimal"></iframe>
                 </div>
-            </section>
+            </div>
             
             <div class="daily-quote-banner">
                 <div class="quote-layout">
@@ -325,7 +328,6 @@
     </div>
 
     <script>
-        // --- RELOJ Y FECHA ---
         function updateTime() {
             const now = new Date();
             document.getElementById('clock').textContent = new Intl.DateTimeFormat('es-ES', {
@@ -339,7 +341,6 @@
         setInterval(updateTime, 1000);
         updateTime();
 
-        // --- BANCO DE FRASES ---
         const phrases = [
             { text: "Caminante, no hay camino, se hace camino al andar.", author: "— Antonio Machado" },
             { text: "La educación es el arma más poderosa que puedes usar para cambiar el mundo.", author: "— Nelson Mandela" },
@@ -369,7 +370,8 @@
         }
         
         setDailyQuote();
-        setTimeout(() => location.reload(), 600000); // Recarga cada 10 min
+        // Recarga automática para que las diapositivas nuevas aparezcan sin reiniciar la TV
+        setTimeout(() => location.reload(), 600000); 
     </script>
 </body>
 </html>
