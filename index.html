@@ -71,6 +71,7 @@
             background: rgba(255,255,255,0.02);
             display: flex;
             align-items: center;
+            justify-content: space-between;
             flex-shrink: 0;
         }
 
@@ -262,21 +263,25 @@
             border: 0; 
         }
 
+        /* DISEÑO REUBICADO DEL BOTÓN DE LOGIN (En la cabecera) */
         .login-tag {
-            position: absolute;
-            bottom: 10px;
-            right: 10px;
-            background: var(--panel-bg);
-            padding: 6px 12px;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 4px 10px;
             border-radius: 6px;
-            font-size: 1.2vh;
-            color: var(--text-main);
-            border: 1px solid var(--accent-blue);
+            font-size: 1.3vh;
+            color: var(--text-muted);
+            border: 1px solid var(--border);
             text-decoration: none;
             display: flex;
             align-items: center;
-            gap: 5px;
-            z-index: 10;
+            gap: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .login-tag:hover {
+            background: rgba(59, 130, 246, 0.1);
+            color: var(--accent-blue);
+            border-color: var(--accent-blue);
         }
     </style>
 </head>
@@ -316,16 +321,16 @@
             </header>
 
             <aside class="agenda-panel">
-                <div class="panel-header">
-                    <h2><i class="fa-solid fa-calendar-day" style="color: var(--accent-blue);"></i> Agenda de la semana</h2>
+                <div class="panel-header" style="justify-content: space-between; width: 100%;">
+                    <h2><i class="fa-solid fa-calendar-day" style="color: var(--accent-blue);"></i> Agenda</h2>
+                    <a href="https://accounts.google.com/ServiceLogin?continue=https://calendar.google.com/calendar/embed" class="login-tag">
+                        <i class="fa-solid fa-lock"></i> Google Login
+                    </a>
                 </div>
                 <div class="agenda-container">
                     <div class="calendar-scaler">
                         <iframe src="https://calendar.google.com/calendar/embed?height=800&wkst=2&ctz=Europe%2FMadrid&showPrint=0&showTitle=0&showNav=0&showDate=0&showTabs=0&showCalendars=0&showTz=0&mode=AGENDA&src=aWVzaG5vc21hY2hhZG8ub3JnX2oxaG8ydmowanFiYW8zYjZ1Nzk5bnMwcjZjQGdyb3VwLmNhbGVuZGFyLmdvb2dsZS5jb20&src=aWVzaG5vc21hY2hhZG9AaWVzaG5vc21hY2hhZG8ub3Jn&color=%23009688&color=%23b39ddb"></iframe>
                     </div>
-                    <a href="https://accounts.google.com/ServiceLogin?continue=https://calendar.google.com/calendar/embed" class="login-tag">
-                        <i class="fa-solid fa-lock"></i> Google Login
-                    </a>
                 </div>
             </aside>
         </div>
@@ -383,14 +388,11 @@
             document.getElementById('quote-container-span').innerHTML = `"${dailySelection.text}" <span id="quote-author">— ${dailySelection.author}</span>`;
         }
         
-        // EJECUCIÓN INMEDIATA SIN ESPERAR EVENTOS DEL DOM
+        // EJECUCIÓN INMEDIATA
         updateTime();
         setDailyQuote();
 
-        // Bucle continuo para el segundero del reloj
         setInterval(updateTime, 1000);
-
-        // Auto-refresh completo del panel cada 10 minutos
         setTimeout(() => location.reload(), 600000); 
     </script>
 </body>
