@@ -36,7 +36,7 @@
 
         .layout-grid {
             display: grid;
-            grid-template-columns: 64vw 34vw; /* Ajuste sutil de proporciones */
+            grid-template-columns: 64vw 34vw;
             width: 100vw;
             height: 100vh;
             gap: var(--gap);
@@ -65,9 +65,12 @@
         }
 
         .panel-header {
-            padding: 1.5vh 20px;
+            height: 6vh;
+            padding: 0 20px;
             border-bottom: 1px solid var(--border);
             background: rgba(255,255,255,0.02);
+            display: flex;
+            align-items: center;
             flex-shrink: 0;
         }
 
@@ -80,42 +83,29 @@
             gap: 8px;
         }
 
-        /* SOLUCIÓN AL CORTE: Forzamos proporción nativa 16:10 o 16:9 limpia */
+        /* Contenedor adaptativo sin deformaciones o barras negras extrañas */
         .slides-body-clipper {
             flex: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            position: relative;
             background: #000;
+            overflow: hidden;
             min-height: 0;
-            position: relative;
         }
 
-        .slides-wrapper {
-            width: 100%;
-            height: 100%;
-            max-width: 100%;
-            max-height: 100%;
-            /* Ajustamos la relación de aspecto nativa (16/10) para evitar las barras negras */
-            aspect-ratio: 16 / 10; 
-            position: relative;
-        }
-
-        .slides-wrapper iframe {
+        .slides-body-clipper iframe {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
-            /* 105% de alto y margen negativo ocultan perfectamente la barra de control inferior de Google */
-            height: 105%; 
-            margin-top: -1%;
+            /* Ajuste exacto para cubrir los bordes de la interfaz de publicación de Google Slides */
+            height: 104%;
+            margin-top: -0.5%;
             border: 0;
         }
 
-        /* Banner de la frase adaptable */
+        /* Altura fija y estable para garantizar la legibilidad instantánea de la frase */
         .daily-quote-banner {
-            flex-shrink: 0;
-            height: 11vh; /* Fijamos una altura proporcional a la pantalla para garantizar su espacio */
+            height: 11vh;
             background: var(--panel-bg);
             border-radius: 14px;
             border: 1px solid var(--border);
@@ -125,6 +115,7 @@
             box-shadow: var(--shadow);
             position: relative;
             overflow: hidden;
+            flex-shrink: 0;
         }
 
         .daily-quote-banner::before {
@@ -143,7 +134,7 @@
         }
 
         .quote-tag {
-            font-size: 1.3vh;
+            font-size: 1.4vh;
             font-weight: 800;
             text-transform: uppercase;
             letter-spacing: 1.5px;
@@ -158,9 +149,12 @@
             flex: 1;
             white-space: normal;
             overflow: hidden;
+            display: flex;
+            align-items: center;
         }
 
-        #quote-text {
+        /* Estilo enfocado a la correcta visualización del texto dinámico script */
+        #quote-container-span {
             font-family: 'Playfair Display', serif;
             font-size: 2.1vh;
             font-style: italic;
@@ -174,6 +168,7 @@
             color: var(--text-muted);
             margin-left: 8px;
             font-weight: 600;
+            display: inline-block;
         }
 
         /* --- COLUMNA DERECHA --- */
@@ -217,12 +212,16 @@
 
         .time-box {
             text-align: right;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
         }
 
         #clock {
-            font-size: 5vh;
+            font-size: 5.5vh;
             font-weight: 800;
             line-height: 1;
+            color: var(--text-main);
         }
 
         #date {
@@ -295,9 +294,7 @@
                     <h2>📌 Tablón de anuncios</h2>
                 </div>
                 <div class="slides-body-clipper">
-                    <div class="slides-wrapper">
-                        <iframe src="https://docs.google.com/presentation/d/e/2PACX-1vQFJtOXaEJ5hexkPY2kxRC7tP1gls02xmfIKMcqx3ymIo9br2n8kOPna2GiC39RFdcKCXaBjSRNtc4L/pubembed?start=true&loop=true&delayms=10000&rm=minimal"></iframe>
-                    </div>
+                    <iframe src="https://docs.google.com/presentation/d/e/2PACX-1vQFJtOXaEJ5hexkPY2kxRC7tP1gls02xmfIKMcqx3ymIo9br2n8kOPna2GiC39RFdcKCXaBjSRNtc4L/pubembed?start=true&loop=true&delayms=10000&rm=minimal"></iframe>
                 </div>
             </div>
             
@@ -305,8 +302,7 @@
                 <div class="quote-layout">
                     <div class="quote-tag">Frase del día</div>
                     <div class="quote-text-container">
-                        <span id="quote-text">Cargando pensamiento del día...</span>
-                        <span id="quote-author"></span>
+                        <div id="quote-container-span">Cargando pensamiento del día...</div>
                     </div>
                 </div>
             </div>
@@ -341,49 +337,74 @@
     </div>
 
     <script>
+        // --- RELOJ Y FECHA ---
         function updateTime() {
-            const now = new Date();
-            document.getElementById('clock').textContent = new Intl.DateTimeFormat('es-ES', {
-                hour: '2-digit', minute: '2-digit', timeZone: 'Europe/Madrid'
-            }).format(now);
+            try {
+                const now = new Date();
+                
+                const timeString = new Intl.DateTimeFormat('es-ES', {
+                    hour: '2-digit', 
+                    minute: '2-digit', 
+                    hour12: false,
+                    timeZone: 'Europe/Madrid'
+                }).format(now);
+                
+                const dateString = new Intl.DateTimeFormat('es-ES', {
+                    weekday: 'long', 
+                    day: 'numeric', 
+                    month: 'long', 
+                    timeZone: 'Europe/Madrid'
+                }).format(now);
 
-            document.getElementById('date').textContent = new Intl.DateTimeFormat('es-ES', {
-                weekday: 'long', day: 'numeric', month: 'long', timeZone: 'Europe/Madrid'
-            }).format(now);
+                document.getElementById('clock').textContent = timeString;
+                document.getElementById('date').textContent = dateString;
+            } catch (error) {
+                console.error("Error actualizando reloj:", error);
+            }
         }
-        setInterval(updateTime, 1000);
-        updateTime();
 
+        // --- BANCO DE FRASES ---
         const phrases = [
-            { text: "Caminante, no hay camino, se hace camino al andar.", author: "— Antonio Machado" },
-            { text: "La educación es el arma más poderosa que puedes usar para cambiar el mundo.", author: "— Nelson Mandela" },
-            { text: "La mente que se abre a una nueva idea jamás vuelve a su tamaño original.", author: "— Albert Einstein" },
-            { text: "El aprendizaje nunca agota a la mente.", author: "— Leonardo da Vinci" },
-            { text: "Lo que tenemos que aprender a hacer, lo aprendemos haciendo.", author: "— Aristóteles" },
-            { text: "Si buscas resultados distintos, no hagas siempre lo mismo.", author: "— Albert Einstein" },
-            { text: "La inteligencia consiste no solo en el conocimiento, sino en la destreza de aplicar los conocimientos.", author: "— Aristóteles" },
-            { text: "El éxito es la suma de pequeños esfuerzos, repetidos día tras día.", author: "— Robert Collier" },
-            { text: "La educación no es preparación para la vida; la educación es la vida en sí misma.", author: "— John Dewey" },
-            { text: "Siempre parece imposible hasta que se hace.", author: "— Nelson Mandela" },
-            { text: "Aprender sin reflexionar es malgastar la energía.", author: "— Confucio" },
-            { text: "Tus mejores profesores son tus mayores errores.", author: "— Ralph Waldo Emerson" },
-            { text: "La paciencia es amarga, pero su fruto es dulce.", author: "— Jean-Jacques Rousseau" },
-            { text: "El sabio no dice todo lo que piensa, pero siempre piensa todo lo que dice.", author: "— Aristóteles" },
-            { text: "No heredamos la tierra de nuestros ancestros, la custodiamos para nuestros hijos.", author: "— Antoine de Saint-Exupéry" }
+            { text: "Caminante, no hay camino, se hace camino al andar.", author: "Antonio Machado" },
+            { text: "La educación es el arma más poderosa que puedes usar para cambiar el mundo.", author: "Nelson Mandela" },
+            { text: "La mente que se abre a una nueva idea jamás vuelve a su tamaño original.", author: "Albert Einstein" },
+            { text: "El aprendizaje nunca agota a la mente.", author: "Leonardo da Vinci" },
+            { text: "Lo que tenemos que aprender a hacer, lo aprendemos haciendo.", author: "Aristóteles" },
+            { text: "Si buscas resultados distintos, no hagas siempre lo mismo.", author: "Albert Einstein" },
+            { text: "La inteligencia consiste no solo en el conocimiento, sino en la destreza de aplicar los conocimientos.", author: "Aristóteles" },
+            { text: "El éxito es la suma de pequeños esfuerzos, repetidos día tras día.", author: "Robert Collier" },
+            { text: "La educación no es preparación para la vida; la educación es la vida en sí misma.", author: "John Dewey" },
+            { text: "Siempre parece imposible hasta que se hace.", author: "Nelson Mandela" },
+            { text: "Aprender sin reflexionar es malgastar la energía.", author: "Confucio" },
+            { text: "Tus mejores profesores son tus mayores errores.", author: "Ralph Waldo Emerson" },
+            { text: "La paciencia es amarga, pero su fruto es dulce.", author: "Jean-Jacques Rousseau" },
+            { text: "El sabio no dice todo lo que piensa, pero siempre piensa todo lo que dice.", author: "Aristóteles" },
+            { text: "No heredamos la tierra de nuestros ancestros, la custodiamos para nuestros hijos.", author: "Antoine de Saint-Exupéry" }
         ];
 
         function setDailyQuote() {
-            const now = new Date();
-            const dateSeed = now.getFullYear() * 1000 + (now.getMonth() + 1) * 100 + now.getDate();
-            const index = dateSeed % phrases.length;
-            const dailySelection = phrases[index];
+            try {
+                const now = new Date();
+                const dateSeed = now.getFullYear() * 1000 + (now.getMonth() + 1) * 100 + now.getDate();
+                const index = dateSeed % phrases.length;
+                const dailySelection = phrases[index];
 
-            document.getElementById('quote-text').textContent = `"${dailySelection.text}"`;
-            document.getElementById('quote-author').textContent = dailySelection.author;
+                const container = document.getElementById('quote-container-span');
+                container.innerHTML = `"${dailySelection.text}" <span id="quote-author">— ${dailySelection.author}</span>`;
+            } catch (error) {
+                console.error("Error cargando frase:", error);
+            }
         }
         
-        setDailyQuote();
+        // Ejecución inmediata al cargar el DOM para evitar estados colgados ("00:00" o "Cargando...")
+        document.addEventListener('DOMContentLoaded', () => {
+            updateTime();
+            setDailyQuote();
+            setInterval(updateTime, 1000);
+        });
+
+        // Recarga completa de la página cada 10 minutos para traer actualizaciones de Slides/Calendario
         setTimeout(() => location.reload(), 600000); 
-    </style>
+    </script>
 </body>
 </html>
