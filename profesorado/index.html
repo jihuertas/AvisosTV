@@ -1,169 +1,399 @@
-
-AvisosTVProfes.html
-100 %
-<!doctype html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tablón Profesorado - IES Hermanos Machado</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Playfair+Display:ital,wght@0,600;1,600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
-  <title>Tablón Sala de Profesorado</title>
+    <style>
+        :root {
+            --bg-deep: #050a14;
+            --panel-bg: #0f172a;
+            --accent-blue: #3b82f6;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border: rgba(255, 255, 255, 0.08);
+            --shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+            --gap: 1.5vh;
+        }
 
-  <!-- Recargar cada 5 minutos (300 segundos) -->
-  <meta http-equiv="refresh" content="300" />
+        * { box-sizing: border-box; }
 
-  <style>
-    :root {
-      --gap: 16px;
-      --bg: #0b0f14;
-      --panel: #111827;
-      --border: rgba(255,255,255,.12);
-      --text: rgba(255,255,255,.92);
-      --muted: rgba(255,255,255,.65);
-    }
+        body, html {
+            height: 100vh;
+            width: 100vw;
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-deep);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            overflow: hidden;
+        }
 
-    html, body {
-      height: 100%;
-      margin: 0;
-      background: var(--bg);
-      color: var(--text);
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-      overflow: hidden; /* ideal para TV */
-    }
+        .layout-grid {
+            display: grid;
+            grid-template-columns: 64vw 34vw;
+            width: 100vw;
+            height: 100vh;
+            gap: var(--gap);
+            padding: var(--gap);
+        }
 
-    /* Layout principal a pantalla completa */
-    .wrap {
-      height: 100%;
-      display: grid;
-      grid-template-columns: 1fr 420px; /* izquierda flexible, derecha fija */
-      gap: var(--gap);
-      padding: var(--gap);
-      box-sizing: border-box;
-    }
+        /* --- COLUMNA IZQUIERDA --- */
+        .left-column {
+            display: flex;
+            flex-direction: column;
+            gap: var(--gap);
+            height: 100%;
+            min-height: 0;
+        }
 
-    /* Ajuste para pantallas más estrechas (por si acaso) */
-    @media (max-width: 1100px) {
-      .wrap { grid-template-columns: 1fr 360px; }
-    }
-    @media (max-width: 900px) {
-      .wrap { grid-template-columns: 1fr; grid-template-rows: 55% 45%; }
-    }
+        .slides-panel-container {
+            flex: 1;
+            background: var(--panel-bg);
+            border-radius: 16px;
+            border: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            min-height: 0;
+        }
 
-    .panel {
-      background: var(--panel);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
-      min-height: 0; /* para que los iframes ajusten bien */
-    }
+        .panel-header {
+            height: 6vh;
+            padding: 0 20px;
+            border-bottom: 1px solid var(--border);
+            background: rgba(255,255,255,0.02);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-shrink: 0;
+        }
 
-    .panel__header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 10px 14px;
-      border-bottom: 1px solid var(--border);
-      font-size: 14px;
-      line-height: 1.2;
-    }
+        .panel-header h2 {
+            margin: 0;
+            font-size: 2vh;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
 
-    .panel__title {
-      font-weight: 700;
-      letter-spacing: .2px;
-    }
+        .slides-body-clipper {
+            flex: 1;
+            position: relative;
+            background: #000;
+            overflow: hidden;
+            min-height: 0;
+        }
 
-    .panel__meta {
-      font-weight: 500;
-      color: var(--muted);
-      white-space: nowrap;
-    }
+        .slides-body-clipper iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 104%;
+            margin-top: -0.5%;
+            border: 0;
+        }
 
-    .panel__body {
-      flex: 1;
-      min-height: 0;
-    }
+        .daily-quote-banner {
+            height: 11vh;
+            background: var(--panel-bg);
+            border-radius: 14px;
+            border: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            padding: 0 24px;
+            box-shadow: var(--shadow);
+            position: relative;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
 
-    iframe {
-      width: 100%;
-      height: 100%;
-      border: 0;
-      display: block;
-      background: #000; /* por si tarda en cargar */
-    }
+        .daily-quote-banner::before {
+            content: '';
+            position: absolute;
+            left: 0; top: 0; bottom: 0;
+            width: 5px;
+            background: var(--accent-blue);
+        }
 
-    /* Opcional: hace que el texto de cabecera no “robe” mucho espacio */
-    .small {
-      font-size: 12px;
-      color: var(--muted);
-      font-weight: 600;
-    }
-  </style>
+        .quote-layout {
+            display: flex;
+            align-items: center;
+            width: 100%;
+            gap: 16px;
+        }
 
-  <script>
-    // Fallback extra: recargar exactamente cada 5 minutos (por si algún navegador ignora meta refresh)
-    setTimeout(() => location.reload(), 300000);
-  </script>
+        .quote-tag {
+            font-size: 1.4vh;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--accent-blue);
+            background: rgba(59, 130, 246, 0.1);
+            padding: 6px 12px;
+            border-radius: 6px;
+            white-space: nowrap;
+        }
+
+        .quote-text-container {
+            flex: 1;
+            white-space: normal;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+        }
+
+        #quote-container-span {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.3vh;
+            font-style: italic;
+            color: var(--text-main);
+            line-height: 1.4;
+        }
+
+        #quote-author {
+            font-family: 'Inter', sans-serif;
+            font-size: 1.5vh;
+            color: var(--text-muted);
+            margin-left: 8px;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        /* --- COLUMNA DERECHA --- */
+        .right-column {
+            display: flex;
+            flex-direction: column;
+            gap: var(--gap);
+            height: 100%;
+            min-height: 0;
+        }
+
+        .brand-panel {
+            height: 13vh;
+            background: var(--panel-bg);
+            border-radius: 16px;
+            border: 1px solid var(--border);
+            padding: 0 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: var(--shadow);
+            flex-shrink: 0;
+        }
+
+        .logo-box {
+            height: 9vh;
+            width: 9vh;
+            background: white;
+            border-radius: 10px;
+            padding: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .logo-box img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+
+        .time-box {
+            text-align: right;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        #clock {
+            font-size: 5.5vh;
+            font-weight: 800;
+            line-height: 1;
+            color: var(--text-main);
+        }
+
+        #date {
+            font-size: 1.6vh;
+            color: var(--text-muted);
+            margin-top: 4px;
+            text-transform: capitalize;
+        }
+
+        .agenda-panel {
+            flex: 1;
+            background: var(--panel-bg);
+            border-radius: 16px;
+            border: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            min-height: 0;
+        }
+
+        .agenda-container {
+            flex: 1;
+            position: relative;
+            overflow: hidden;
+            background: #fff;
+        }
+
+        .calendar-scaler {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 111.11%;
+            height: 111.11%;
+            transform: scale(0.9);
+            transform-origin: top left;
+        }
+
+        .calendar-scaler iframe { 
+            width: 100%; 
+            height: 100%; 
+            border: 0; 
+        }
+
+        /* DISEÑO REUBICADO DEL BOTÓN DE LOGIN (En la cabecera) */
+        .login-tag {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 1.3vh;
+            color: var(--text-muted);
+            border: 1px solid var(--border);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .login-tag:hover {
+            background: rgba(59, 130, 246, 0.1);
+            color: var(--accent-blue);
+            border-color: var(--accent-blue);
+        }
+    </style>
 </head>
-
 <body>
-  <div class="wrap">
-    <!-- IZQUIERDA: Presentación de Google Slides (publicada en la web) -->
-    <section class="panel">
-      <div class="panel__header">
-        <div class="panel__title">📌 Tablón de anuncios</div>
-        <div class="panel__meta small">Actualiza cada 5 min</div>
-      </div>
-      <div class="panel__body">
+
+    <div class="layout-grid">
         
-        <iframe
-          src="https://docs.google.com/presentation/d/e/2PACX-1vSMXRH-aO-Ffy0NdXclGNSEmsQLPbfIgeFBM7z-rmNVjxCAtL3tR2902JEVFpWkI6XHW9ACqCz6nPhk/pubembed?start=true&loop=true&delayms=10000"
-          allowfullscreen="true"
-          mozallowfullscreen="true"
-          webkitallowfullscreen="true">
-        </iframe>
-      </div>
-    </section>
+        <div class="left-column">
+            <div class="slides-panel-container">
+                <div class="panel-header">
+                    <h2>📌 Tablón del profesorado</h2>
+                </div>
+                <div class="slides-body-clipper">
+                    <iframe src="https://docs.google.com/presentation/d/e/2PACX-1vSMXRH-aO-Ffy0NdXclGNSEmsQLPbfIgeFBM7z-rmNVjxCAtL3tR2902JEVFpWkI6XHW9ACqCz6nPhk/pubembed?start=true&amp;loop=true&amp;delayms=10000"></iframe>
+                </div>
+            </div>
+            
+            <div class="daily-quote-banner">
+                <div class="quote-layout">
+                    <div class="quote-tag">Frase del día</div>
+                    <div class="quote-text-container">
+                        <div id="quote-container-span">Cargando pensamiento del día...</div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-    <!-- DERECHA: Google Calendar incrustado -->
-    <aside class="panel">
-      <div class="panel__header">
-        <div class="panel__title">📅 Agenda</div>
-        <div class="panel__meta small" id="clock"></div>
-      </div>
-      <div class="panel__body">
-        <!--
-          Pega aquí el iframe de "Integrar calendario".
-          En Google Calendar: ⚙️ Ajustes → (tu calendario) → Integrar calendario → Copiar iframe
-          Sugerencia: usa "mode=AGENDA" para lista, o "mode=WEEK" para semana.
-        -->
-        <iframe
-          src="https://calendar.google.com/calendar/embed?height=600&wkst=1&ctz=Europe%2FMadrid&showPrint=0&showTitle=0&showNav=0&showTabs=0&showTz=0&showCalendars=0&mode=AGENDA&src=aWVzaG5vc21hY2hhZG8ub3JnX2oxaG8ydmowanFiYW8zYjZ1Nzk5bnMwcjZjQGdyb3VwLmNhbGVuZGFyLmdvb2dsZS5jb20&src=aWVzaG5vc21hY2hhZG8ub3JnX3VvYTk4ZmFudjI0NWl1bmtoNjVpOWM0NjJrQGdyb3VwLmNhbGVuZGFyLmdvb2dsZS5jb20&src=aWVzaG5vc21hY2hhZG9AaWVzaG5vc21hY2hhZG8ub3Jn&color=%23009688&color=%237cb342&color=%23b39ddb" style="border: 0" width="800" height="600" frameborder="0" scrolling="no""
-          scrolling="no">
-        </iframe>
-      </div>
-    </aside>
-  </div>
+        <div class="right-column">
+            <header class="brand-panel">
+                <div class="logo-box">
+                    <img src="../logoieshm.jpg" alt="IES Logo" onerror="this.style.display='none'">
+                </div>
+                <div class="time-box">
+                    <div id="clock">00:00</div>
+                    <div id="date">Cargando...</div>
+                </div>
+            </header>
 
-  <script>
-    // Reloj simple (Europe/Madrid) para la cabecera de la agenda
-    function tick(){
-      const now = new Date();
-      const fmt = new Intl.DateTimeFormat("es-ES", {
-        timeZone: "Europe/Madrid",
-        weekday: "short",
-        day: "2-digit",
-        month: "2-digit",
-        hour: "2-digit",
-        minute: "2-digit"
-      });
-      document.getElementById("clock").textContent = fmt.format(now);
-    }
-    tick();
-    setInterval(tick, 10000);
-  </script>
+            <aside class="agenda-panel">
+                <div class="panel-header" style="justify-content: space-between; width: 100%;">
+                    <h2><i class="fa-solid fa-calendar-day" style="color: var(--accent-blue);"></i> Agenda</h2>
+                    <a href="https://accounts.google.com/ServiceLogin?continue=https://calendar.google.com/calendar/embed" class="login-tag">
+                        <i class="fa-solid fa-lock"></i> Google Login
+                    </a>
+                </div>
+                <div class="agenda-container">
+                    <div class="calendar-scaler">
+                        <iframe src="https://calendar.google.com/calendar/embed?height=600&amp;wkst=1&amp;ctz=Europe%2FMadrid&amp;showPrint=0&amp;showTitle=0&amp;showNav=0&amp;showTabs=0&amp;showTz=0&amp;showCalendars=0&amp;mode=AGENDA&amp;src=aWVzaG5vc21hY2hhZG8ub3JnX2oxaG8ydmowanFiYW8zYjZ1Nzk5bnMwcjZjQGdyb3VwLmNhbGVuZGFyLmdvb2dsZS5jb20&amp;src=aWVzaG5vc21hY2hhZG8ub3JnX3VvYTk4ZmFudjI0NWl1bmtoNjVpOWM0NjJrQGdyb3VwLmNhbGVuZGFyLmdvb2dsZS5jb20&amp;src=aWVzaG5vc21hY2hhZG9AaWVzaG5vc21hY2hhZG8ub3Jn&amp;color=%23009688&amp;color=%237cb342&amp;color=%23b39ddb" style="border:solid 1px #777" width="NaN" height="600" frameborder="0" scrolling="no"></iframe>
+                    </div>
+                </div>
+            </aside>
+        </div>
+
+    </div>
+
+    <script>
+        // --- BANCO DE FRASES ---
+        const phrases = [
+            { text: "Caminante, no hay camino, se hace camino al andar.", author: "Antonio Machado" },
+            { text: "La educación es el arma más poderosa que puedes usar para cambiar el mundo.", author: "Nelson Mandela" },
+            { text: "La mente que se abre a una nueva idea jamás vuelve a su tamaño original.", author: "Albert Einstein" },
+            { text: "El aprendizaje nunca agota a la mente.", author: "Leonardo da Vinci" },
+            { text: "Lo que tenemos que aprender a hacer, lo aprendemos haciendo.", author: "Aristóteles" },
+            { text: "Si buscas resultados distintos, no hagas siempre lo mismo.", author: "Albert Einstein" },
+            { text: "La inteligencia consiste no solo en el conocimiento, sino en la destreza de aplicar los conocimientos.", author: "Aristóteles" },
+            { text: "El éxito es la suma de pequeños esfuerzos, repetidos día tras día.", author: "Robert Collier" },
+            { text: "La educación no es preparación para la vida; la educación es la vida en sí misma.", author: "John Dewey" },
+            { text: "Siempre parece imposible hasta que se hace.", author: "Nelson Mandela" },
+            { text: "Aprender sin reflexionar es malgastar la energía.", author: "Confucio" },
+            { text: "Tus mejores profesores son tus mayores errores.", author: "Ralph Waldo Emerson" },
+            { text: "La paciencia es amarga, pero su fruto es dulce.", author: "Jean-Jacques Rousseau" },
+            { text: "El sabio no dice todo lo que piensa, pero siempre piensa todo lo que dice.", author: "Aristóteles" },
+            { text: "No heredamos la tierra de nuestros ancestros, la custodiamos para nuestros hijos.", author: "Antoine de Saint-Exupéry" }
+        ];
+
+        // --- FUNCIONES DE CARGA DIRECTA ---
+        function updateTime() {
+            const now = new Date();
+            
+            const timeString = new Intl.DateTimeFormat('es-ES', {
+                hour: '2-digit', 
+                minute: '2-digit', 
+                hour12: false,
+                timeZone: 'Europe/Madrid'
+            }).format(now);
+            
+            const dateString = new Intl.DateTimeFormat('es-ES', {
+                weekday: 'long', 
+                day: 'numeric', 
+                month: 'long', 
+                timeZone: 'Europe/Madrid'
+            }).format(now);
+
+            document.getElementById('clock').textContent = timeString;
+            document.getElementById('date').textContent = dateString;
+        }
+
+        function setDailyQuote() {
+            const now = new Date();
+            const dateSeed = now.getFullYear() * 1000 + (now.getMonth() + 1) * 100 + now.getDate();
+            const index = dateSeed % phrases.length;
+            const dailySelection = phrases[index];
+
+            document.getElementById('quote-container-span').innerHTML = `"${dailySelection.text}" <span id="quote-author">— ${dailySelection.author}</span>`;
+        }
+        
+        // EJECUCIÓN INMEDIATA
+        updateTime();
+        setDailyQuote();
+
+        setInterval(updateTime, 1000);
+        setTimeout(() => location.reload(), 600000); 
+    </script>
 </body>
 </html>
-
-Mostrando AvisosTVProfes.html.
